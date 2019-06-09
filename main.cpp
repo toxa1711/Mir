@@ -22,11 +22,11 @@
 #define SmallSheep_CELL 's'
 #define empty_CELL ' '
 
-#define screenH 50
-#define screenW 190
+#define screenH 60
+#define screenW 212
 
 char map[screenH*screenW];
-char String[screenW] = " saff";
+char String[screenW] = " move:";
 
 int moveCount = 0;
 
@@ -90,7 +90,7 @@ int screenUpdate(){
 
 int updateString(){
 	for(int i = 0; i < 5; i++){
-		String[i+5] = (moveCount / (int)(pow(10, (4-i)))) % 10 + '0';
+		String[i+7] = (moveCount / (int)(pow(10, (4-i)))) % 10 + '0';
 	}
 	return 0;
 }
@@ -98,7 +98,7 @@ int updateString(){
 int generateMap(){
 	for(int j = 0; j < screenH; j++){
 			for(int i = 0; i < screenW; i++){
-				map[j*10+i] = '1';
+				map[j*screenW+i] = '.';
 				//putchar('X');
 			}
 		}
@@ -106,7 +106,15 @@ int generateMap(){
 }
 
 int MapLoad(){
-	FILE *buff = fopen("./map1.txt", "r");
+
+	for(int j = 0; j < screenH; j++){
+				for(int i = 0; i < screenW; i++){
+					map[j*screenW+i] = ' ';
+					//putchar('X');
+				}
+			}
+
+	FILE *buff = fopen("../map1.txt", "r");
 	int i = 0;
 	char c;
 	while((c = getc(buff)) != EOF){
@@ -118,6 +126,9 @@ int MapLoad(){
 				map[i] = ' ';
 			}
 			i++;
+		}
+		else{
+			i += screenW - 190;
 		}
 	}
 	fclose(buff);
