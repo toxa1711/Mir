@@ -1,5 +1,9 @@
 class bot {
 public:
+	char* allow;
+
+	char symbolDead;
+
 	int Hunger;
 	int MaxHunger;
 
@@ -13,7 +17,7 @@ public:
 
 	int die();
 
-	int initialize(char c);
+	int initialize(char c, char* f);
 
 	int setup(int xx, int yy);
 

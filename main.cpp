@@ -21,16 +21,19 @@
 #define SmallSheep_CELL 's'
 #define empty_CELL ' '
 
-#define screenH 60
+#define screenH 58
 #define screenW 212
 
 char map[screenH*screenW];
+
+char mapMobs[screenH*screenW];
+
 char String[screenW] = " move:";
 
 int moveCount = 0;
 
 bot sheeps[500];
-int sheepsN = 500;
+int sheepsN = 2;
 int sheepsStart = 2;
 
 
@@ -111,41 +114,60 @@ int grassGrow(){
 int screenUpdate(){
 	for(int j = 0; j < screenH; j++){
 		for(int i = 0; i < screenW; i++){
-			if(map[i+j*(screenW)] == 'X'){
-				printf("\033[1;30m");
-				printf("\033[1;100m");
-				putchar(map[i+j*(screenW)]);
-				printf("\033[1;0m");
-			}
-			else if(map[i+j*(screenW)] == '.'){
-				printf("\033[1;32m");
-				printf("\033[1;40m");
-				putchar(map[i+j*(screenW)]);
-				printf("\033[1;0m");
-			}
-			else if(map[i+j*(screenW)] == '*'){
-				printf("\033[1;33m");
-				printf("\033[1;40m");
-				putchar(map[i+j*(screenW)]);
-				printf("\033[1;0m");
-			}
-			else if(map[i+j*(screenW)] == '~'){
-				printf("\033[1;34m");
-				printf("\033[1;44m");
-				//putchar(map[i+j*(screenW)]);
-				putchar(' ');
-				printf("\033[1;0m");
-			}
-			else if(map[i+j*(screenW)] == 'W'){
-				printf("\033[1;31m");
-				putchar(map[i+j*(screenW)]);
-				printf("\033[1;0m");
+			if(mapMobs[i+j*(screenW)] == ' '){
+				if(map[i+j*(screenW)] == 'X'){
+					printf("\033[1;30m");
+					printf("\033[1;100m");
+					putchar(map[i+j*(screenW)]);
+					printf("\033[1;0m");
+				}
+				else if(map[i+j*(screenW)] == '.'){
+					printf("\033[1;32m");
+					printf("\033[1;40m");
+					putchar(map[i+j*(screenW)]);
+					printf("\033[1;0m");
+				}
+				else if(map[i+j*(screenW)] == '*'){
+					printf("\033[1;33m");
+					printf("\033[1;40m");
+					putchar(map[i+j*(screenW)]);
+					printf("\033[1;0m");
+				}
+				else if(map[i+j*(screenW)] == '~'){
+					printf("\033[1;34m");
+					printf("\033[1;44m");
+					//putchar(map[i+j*(screenW)]);
+					putchar(' ');
+					printf("\033[1;0m");
+				}
+				else if(map[i+j*(screenW)] == 'W'){
+					printf("\033[1;31m");
+					putchar(map[i+j*(screenW)]);
+					printf("\033[1;0m");
+				}
+				else{
+					printf("\033[1;40m");
+					//printf("\033[1;27m");
+					putchar(map[i+j*(screenW)]);
+					printf("\033[1;0m");
+				}
 			}
 			else{
-				printf("\033[1;40m");
-				//printf("\033[1;27m");
-				putchar(map[i+j*(screenW)]);
-				printf("\033[1;0m");
+				if(mapMobs[i+j*(screenW)] == 'W'){
+					printf("\033[1;31m");
+					putchar(mapMobs[i+j*(screenW)]);
+					printf("\033[1;0m");
+				}
+				else if(mapMobs[i+j*(screenW)] == 'X'){
+					printf("\033[1;30m");
+					printf("\033[1;100m");
+					putchar(mapMobs[i+j*(screenW)]);
+					printf("\033[1;0m");
+				}
+				else{
+					putchar(mapMobs[i+j*(screenW)]);
+				}
+
 			}
 		}
 		putchar('\n');
@@ -153,7 +175,8 @@ int screenUpdate(){
 	for(int i = 0; i < screenW; i++){
 		putchar(String[i]);
 	}
-	for(int j = 0; j < screenH+1; j++){
+	putchar('\n');
+	for(int j = 0; j < screenH+2; j++){
 		printf("\033[1A");
 	}
 	return 0;
@@ -167,6 +190,15 @@ int updateString(){
 }
 
 int generateMap(){
+
+	//filling object layer
+	for(int j = 0; j < screenH; j++){
+			for(int i = 0; i < screenW; i++){
+				mapMobs[j*screenW+i] = ' ';
+				//putchar('X');
+			}
+		}
+	//filling object layer
 
 	//filling world with water
 	for(int j = 0; j < screenH; j++){
@@ -319,35 +351,81 @@ int MapLoad(){
 	return 0;
 }
 
-int setupSheeps(){
-	for(int i = 0; i < sheepsStart; i++){
+int setupMobs(){
+	for(int i = 0; i < sheepsN; i++){
+		sheeps[i].initialize('W', " .*");
 		sheeps[i].setup(rand() % screenW, rand() % screenH);
 		//sheeps[i].setup(100, 5);
-		map[sheeps[i].x+sheeps[i].y*screenW] = 'S';
+		mapMobs[sheeps[i].x+sheeps[i].y*screenW] = sheeps[i].symbol;
 	}
+	sheeps[sheepsN].initialize('u', "~");
+	sheeps[sheepsN].setup(rand() % screenW, rand() % screenH);
+	mapMobs[sheeps[sheepsN].x+sheeps[sheepsN].y*screenW] = sheeps[sheepsN].symbol;
+	sheepsN++;
+	sheeps[sheepsN].Hunger = 1000;
+	sheeps[sheepsN].symbolDead = 'n';
+
 	return 0;
 }
 
-/*
-int setupWolfs(){
-	for(int i = 0; i < wolfsStart; i++){
-			wolfs[i].setup(rand() % screenW, rand() % screenH);
-			//sheeps[i].setup(100, 5);
-			map[wolfs[i].x+wolfs[i].y*screenW] = 'W';
-		}
-	return 0;
-}
-*/
+int moveMobs(){
 
-int groundSheepMovable(char f){
-	if((f == ' ') || (f == '.') || (f == '*')){
-		return 1;
-	}
-	return 0; //yes
-}
-
-int moveSheeps(){
 	for(int i = 0; i < sheepsN; i++){
+
+		if(sheeps[i].dead == 1){
+			return 0;
+		}
+
+		if(sheeps[i].Hunger < 1){
+			sheeps[i].die();
+			mapMobs[screenW*sheeps[i].y+sheeps[i].x] = sheeps[i].symbolDead;
+		}
+		else{
+			sheeps[i].Hunger--;
+		}
+
+		int direction = sheeps[i].getSolution("hui");
+
+		int x,y;
+
+		x = sheeps[i].x;
+		y = sheeps[i].y;
+
+		if((x+1 < screenW) && direction == 0){
+			x = sheeps[i].x + 1;
+			y = sheeps[i].y;
+		}
+		if((y > 0) && direction == 1){
+			x = sheeps[i].x;
+			y = sheeps[i].y - 1;
+			}
+		if((x-1 > 0) && direction == 2){
+			x = sheeps[i].x - 1;
+			y = sheeps[i].y;
+			}
+		if((y+1 < screenH) && direction == 3){
+			x = sheeps[i].x;
+			y = sheeps[i].y + 1;
+			}
+
+		int z = 0;
+		while(*(sheeps[i].allow + z) != '\0'){
+			if(map[x+y*screenW] == *(sheeps[i].allow + z)){
+				mapMobs[screenW*sheeps[i].y+sheeps[i].x] = ' ';
+				sheeps[i].x = x;
+				sheeps[i].y = y;
+				mapMobs[x+y*screenW] = sheeps[i].symbol;
+				break;
+			}
+			z++;
+		}
+		/*else{
+
+		}*/
+
+	}
+
+	/*for(int i = 0; i < sheepsN; i++){
 		if(sheeps[i].Hunger > 1000){
 			for(int z = 0; z < sheepsN; z++){
 				if(sheeps[z].dead == 1){
@@ -442,12 +520,12 @@ int moveSheeps(){
 					map[sheeps[i].x+sheeps[i].y*screenW] = ' ';
 				}
 			}
-	}
+	}*/
 	return 0;
 }
 
 int move(){
-	moveSheeps();
+	moveMobs();
 	moveCount++;
 	return 0;
 }
@@ -457,14 +535,13 @@ int main(){
 	printf("\033[2J\033[1;1H");
 	generateMap();
 	//MapLoad();
-	setupSheeps();
-	screenUpdate();
+	setupMobs();
 	screenUpdate();
 	while(1){
 		move();
 		grassGrow();
 		updateString();
-		usleep(10000);
+		usleep(100000);
 		screenUpdate();
 		//getchar();
 	}
