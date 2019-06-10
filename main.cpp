@@ -38,6 +38,74 @@ Wolf wolfs[500];
 int wolfsStart = 2;
 int wolfsN = 200;
 
+
+
+int grassGrow(){
+
+	//increasing grass
+	for(int i = 0; i < 10; i++){
+		int z = 100; // grass count
+		while(z > 0){
+			int x = rand() % (screenW-2) + 1;
+			int y = rand() % (screenH-2) + 1;
+			if(map[x+y*screenW] == '.'){
+				if(map[x+1+y*screenW] == ' '){
+					map[x+1+y*screenW] = '.';
+					break;
+				}
+				if(map[x+(y-1)*screenW] == ' '){
+					map[x+(y-1)*screenW] = '.';
+					break;
+				}
+				if(map[x-1+y*screenW] == ' '){
+					map[x-1+y*screenW] = '.';
+					break;
+				}
+				if(map[x+(y+1)*screenW] == ' '){
+					map[x+(y+1)*screenW] = '.';
+					break;
+				}
+			}
+				z--;
+		}
+	}
+	//increasing grass
+
+
+	//promoting grass to flowers
+	for(int i = 0; i < 1; i++){
+		int z = 2; // grass count
+			while(z > 0){
+					int x = rand() % (screenW-2) + 1;
+					int y = rand() % (screenH-2) + 1;
+					if(map[x+y*screenW] == '.'){
+						map[x+y*screenW] = '*';
+					}
+					z--;
+			}
+	}
+	//promoting grass to flowers
+
+
+	//creating random grass spots
+	if(rand() % 4 == 0){
+		for(int i = 0; i < 1; i++){
+				int z = 1;
+					while(z > 0){
+							int x = rand() % (screenW-2) + 1;
+							int y = rand() % (screenH-2) + 1;
+							if(map[x+y*screenW] == ' '){
+								map[x+y*screenW] = '.';
+							}
+							z--;
+					}
+			}
+	}
+	//creating random grass spots
+
+	return 0;
+}
+
 int screenUpdate(){
 	for(int j = 0; j < screenH; j++){
 		for(int i = 0; i < screenW; i++){
@@ -62,7 +130,8 @@ int screenUpdate(){
 			else if(map[i+j*(screenW)] == '~'){
 				printf("\033[1;34m");
 				printf("\033[1;44m");
-				putchar(map[i+j*(screenW)]);
+				//putchar(map[i+j*(screenW)]);
+				putchar(' ');
 				printf("\033[1;0m");
 			}
 			else if(map[i+j*(screenW)] == 'W'){
@@ -96,12 +165,125 @@ int updateString(){
 }
 
 int generateMap(){
+
+	//filling world with water
 	for(int j = 0; j < screenH; j++){
-			for(int i = 0; i < screenW; i++){
-				map[j*screenW+i] = '.';
-				//putchar('X');
-			}
+		for(int i = 0; i < screenW; i++){
+			map[j*screenW+i] = '~';
+			//putchar('X');
 		}
+	}
+	//filling world with water
+
+	//LAND
+
+	for(int ff = 0;ff < 100; ff++){
+
+	//creating random land spots
+		if(rand() % 4 == 0){
+			for(int i = 0; i < 1; i++){
+					int z = 1;
+						while(z > 0){
+								int x = rand() % (screenW-2) + 1;
+								int y = rand() % (screenH-2) + 1;
+								if(map[x+y*screenW] == '~'){
+									map[x+y*screenW] = ' ';
+								}
+								z--;
+						}
+				}
+		}
+		//creating random land spots
+
+		//increasing lands
+			for(int i = 0; i < 100; i++){ //max grass per move
+				int z = 100; // randow trys
+				while(z > 0){
+					int x = rand() % (screenW-2) + 1;
+					int y = rand() % (screenH-2) + 1;
+					if(map[x+y*screenW] == ' '){
+						if(map[x+1+y*screenW] == '~'){
+							map[x+1+y*screenW] = ' ';
+							break;
+						}
+						if(map[x+(y-1)*screenW] == '~'){
+							map[x+(y-1)*screenW] = ' ';
+							break;
+						}
+						if(map[x-1+y*screenW] == '~'){
+							map[x-1+y*screenW] = ' ';
+							break;
+						}
+						if(map[x+(y+1)*screenW] == '~'){
+							map[x+(y+1)*screenW] = ' ';
+							break;
+						}
+					}
+						z--;
+				}
+			}
+			//increasing lands
+	}
+
+	//LAND
+
+
+	//Mountains
+
+	for(int ff = 0;ff < 50; ff++){
+
+		//creating random land spots
+			if(rand() % 2 == 0){
+				for(int i = 0; i < 1; i++){
+						int z = 1;
+							while(z > 0){
+									int x = rand() % (screenW-2) + 1;
+									int y = rand() % (screenH-2) + 1;
+									if(map[x+y*screenW] == ' '){
+										map[x+y*screenW] = 'X';
+									}
+									z--;
+							}
+					}
+			}
+			//creating random land spots
+
+			//increasing lands
+				for(int i = 0; i < 100; i++){ //max grass per move
+					int z = 10; // randow trys
+					while(z > 0){
+						int x = rand() % (screenW-2) + 1;
+						int y = rand() % (screenH-2) + 1;
+						if(map[x+y*screenW] == 'X'){
+							if(map[x+1+y*screenW] == ' '){
+								map[x+1+y*screenW] = 'X';
+								break;
+							}
+							if(map[x+(y-1)*screenW] == ' '){
+								map[x+(y-1)*screenW] = 'X';
+								break;
+							}
+							if(map[x-1+y*screenW] == ' '){
+								map[x-1+y*screenW] = 'X';
+								break;
+							}
+							if(map[x+(y+1)*screenW] == ' '){
+								map[x+(y+1)*screenW] = 'X';
+								break;
+							}
+						}
+							z--;
+					}
+				}
+				//increasing lands
+		}
+
+	//Mountains
+
+	for(int g = 0; g < 30; g++){
+		grassGrow();
+	}
+
 	return 0;
 }
 
@@ -158,98 +340,6 @@ int groundSheepMovable(char f){
 		return 1;
 	}
 	return 0; //yes
-}
-
-int grassGrow(){
-	for(int i = 0; i < 10; i++){
-		int z = 100; // grass count
-		while(z > 0){
-			int x = rand() % (screenW-2) + 1;
-			int y = rand() % (screenH-2) + 1;
-			if(map[x+y*screenW] == '.'){
-				if(map[x+1+y*screenW] == ' '){
-					map[x+1+y*screenW] = '.';
-					break;
-				}
-				if(map[x+(y-1)*screenW] == ' '){
-					map[x+(y-1)*screenW] = '.';
-					break;
-				}
-				if(map[x-1+y*screenW] == ' '){
-					map[x-1+y*screenW] = '.';
-					break;
-				}
-				if(map[x+(y+1)*screenW] == ' '){
-					map[x+(y+1)*screenW] = '.';
-					break;
-				}
-			}
-			/*if(map[x+y*screenW] == '*'){
-				if(map[x+1+y*screenW] == '.'){
-					map[x+1+y*screenW] = '*';
-					break;
-				}
-				if(map[x+(y-1)*screenW] == '.'){
-					map[x+(y-1)*screenW] = '*';
-					break;
-				}
-				if(map[x-1+y*screenW] == '.'){
-					map[x-1+y*screenW] = '*';
-					break;
-				}
-				if(map[x+(y+1)*screenW] == '.'){
-					map[x+(y+1)*screenW] = '*';
-					break;
-				}
-				if(map[x+1+y*screenW] == ' '){
-					map[x+1+y*screenW] = '.';
-					break;
-				}
-				if(map[x+(y-1)*screenW] == ' '){
-					map[x+(y-1)*screenW] = '.';
-					break;
-				}
-				if(map[x-1+y*screenW] == ' '){
-					map[x-1+y*screenW] = '.';
-					break;
-				}
-				if(map[x+(y+1)*screenW] == ' '){
-					map[x+(y+1)*screenW] = '.';
-					break;
-				}*/
-				/*if(map[x+y*screenW] == '.'){
-					map[x+y*screenW] = '*';
-					break;
-				}
-			}*/
-				z--;
-		}
-	}
-	for(int i = 0; i < 1; i++){
-		int z = 2; // grass count
-			while(z > 0){
-					int x = rand() % (screenW-2) + 1;
-					int y = rand() % (screenH-2) + 1;
-					if(map[x+y*screenW] == '.'){
-						map[x+y*screenW] = '*';
-					}
-					z--;
-			}
-	}
-	if(rand() % 4 == 0){
-		for(int i = 0; i < 1; i++){
-				int z = 1; // grass count
-					while(z > 0){
-							int x = rand() % (screenW-2) + 1;
-							int y = rand() % (screenH-2) + 1;
-							if(map[x+y*screenW] == ' '){
-								map[x+y*screenW] = '.';
-							}
-							z--;
-					}
-			}
-	}
-	return 0;
 }
 
 int moveSheeps(){
@@ -454,8 +544,8 @@ int move(){
 int main(){
 	srand(time(0));
 	printf("\033[2J\033[1;1H");
-	//generateMap();
-	MapLoad();
+	generateMap();
+	//MapLoad();
 	setupSheeps();
 	setupWolfs();
 	screenUpdate();
