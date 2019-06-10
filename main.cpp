@@ -10,8 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <unistd.h>
-#include "Sheep.h"
-#include "Wolf.h"
+#include "bot.h"
 #include <math.h>
 
 #define Mountains_CELL 'X'
@@ -30,14 +29,17 @@ char String[screenW] = " move:";
 
 int moveCount = 0;
 
-Sheep sheeps[500];
+bot sheeps[500];
 int sheepsN = 500;
 int sheepsStart = 2;
 
+
+
+/* No Wolfs as a part of a programm
 Wolf wolfs[500];
 int wolfsStart = 2;
 int wolfsN = 200;
-
+*/
 
 
 int grassGrow(){
@@ -326,6 +328,7 @@ int setupSheeps(){
 	return 0;
 }
 
+/*
 int setupWolfs(){
 	for(int i = 0; i < wolfsStart; i++){
 			wolfs[i].setup(rand() % screenW, rand() % screenH);
@@ -334,6 +337,7 @@ int setupWolfs(){
 		}
 	return 0;
 }
+*/
 
 int groundSheepMovable(char f){
 	if((f == ' ') || (f == '.') || (f == '*')){
@@ -442,101 +446,8 @@ int moveSheeps(){
 	return 0;
 }
 
-int moveWolfs(){
-
-
-	for(int i = 0;i < wolfsN; i++){
-		int x = wolfs[i].x;
-		int y = wolfs[i].y;
-		int flag = 0;
-		if(wolfs[i].Hunger > -10){
-			wolfs[i].Hunger--;
-		}
-		else{
-
-		}
-
-		if(wolfs[i].Hunger > 0){
-			if(wolfs[i].Hunger > 1500){
-				for(int z = 0; z < wolfsN; z++){
-					if(wolfs[z].dead == 1){
-						wolfs[z].setup(wolfs[i].x-1, wolfs[i].y);
-						wolfs[z].dead = 0;
-						wolfs[z].Hunger = 500;
-						wolfs[i].Hunger -= 1000;
-						break;
-					}
-				}
-			}
-
-			for(int j = 1; j < 16;j++){
-				if((x+j < screenW) && ((map[x+j+(y)*screenW] == 'S'))){
-					x = wolfs[i].x + 1;
-					y = wolfs[i].y;
-					flag = 1;
-					break;
-				}
-				else if((y-j > 0) && ((map[x+(y-j)*screenW] == 'S'))){
-					x = wolfs[i].x;
-					y = wolfs[i].y - 1;
-					flag = 1;
-					break;
-
-				}
-				else if((x-j > 0) && ((map[x-j+(y)*screenW] == 'S'))){
-					x = wolfs[i].x - 1;
-					y = wolfs[i].y;
-					flag = 1;
-					break;
-				}
-				else if((y+j < screenH) && ((map[x+(y+j)*screenW] == 'S') )){
-					x = wolfs[i].x;
-					y = wolfs[i].y + 1;
-					flag = 1;
-					break;
-				}
-			}
-			if((map[x+y*screenW] == 'X') || (map[x+y*screenW] == '~')){
-
-			}
-			else{
-
-				if((map[x+y*screenW] == '*')){
-					wolfs[i].Hunger += 2;
-				}
-
-				if((map[x+y*screenW] == '.')){
-					wolfs[i].Hunger += 1;
-				}
-				if((map[x+y*screenW] == 'S')){
-					wolfs[i].Hunger += 300;
-					for(int uu = 0; uu < sheepsN; uu++){
-						if((sheeps[uu].x == x) && (sheeps[uu].y == y)){
-							sheeps[uu].Hunger = -1000;
-							sheeps[uu].dead = 0;
-							break;
-						}
-					}
-				}
-			}
-			map[wolfs[i].x+wolfs[i].y*screenW] = ' ';
-			wolfs[i].x = x;
-			wolfs[i].y = y;
-			map[x+y*screenW] = 'W';
-			}
-		else{
-			if(wolfs[i].dead == 0){
-				wolfs[i].dead = 1;
-				map[wolfs[i].x+wolfs[i].y*screenW] = ' ';
-			}
-		}
-	}
-	return 0;
-}
-
 int move(){
 	moveSheeps();
-	moveWolfs();
 	moveCount++;
 	return 0;
 }
@@ -547,7 +458,6 @@ int main(){
 	generateMap();
 	//MapLoad();
 	setupSheeps();
-	setupWolfs();
 	screenUpdate();
 	screenUpdate();
 	while(1){
