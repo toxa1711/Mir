@@ -153,20 +153,15 @@ int screenUpdate(){
 				}
 			}
 			else{
-				if(mapMobs[i+j*(screenW)] == 'W'){
-					printf("\033[1;31m");
-					putchar(mapMobs[i+j*(screenW)]);
-					printf("\033[1;0m");
+
+				if(map[i+j*(screenW)] == '~'){ //Water under letter
+					printf("\033[1;44m");
 				}
-				else if(mapMobs[i+j*(screenW)] == 'X'){
-					printf("\033[1;30m");
+				else if(map[i+j*(screenW)] == 'X'){
 					printf("\033[1;100m");
-					putchar(mapMobs[i+j*(screenW)]);
-					printf("\033[1;0m");
 				}
-				else{
-					putchar(mapMobs[i+j*(screenW)]);
-				}
+
+				putchar(mapMobs[i+j*(screenW)]);
 
 			}
 		}
@@ -358,6 +353,7 @@ int setupMobs(){
 		//sheeps[i].setup(100, 5);
 		mapMobs[sheeps[i].x+sheeps[i].y*screenW] = sheeps[i].symbol;
 	}
+	sheeps[0].allow = " X~.*";
 	sheeps[sheepsN].initialize('u', "~");
 	sheeps[sheepsN].setup(rand() % screenW, rand() % screenH);
 	mapMobs[sheeps[sheepsN].x+sheeps[sheepsN].y*screenW] = sheeps[sheepsN].symbol;
