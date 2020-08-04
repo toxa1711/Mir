@@ -45,7 +45,7 @@ int wolfsN = 200;
 */
 
 
-int grassGrow(){
+int grassGrow(){ //every day grows
 
 	//increasing grass
 	for(int i = 0; i < 10; i++){
