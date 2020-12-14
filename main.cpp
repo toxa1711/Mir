@@ -21,8 +21,8 @@
 #define SmallSheep_CELL 's'
 #define empty_CELL ' '
 
-#define screenH 58
-#define screenW 212
+#define screenH 65
+#define screenW 200
 
 char map[screenH*screenW];
 
@@ -33,7 +33,7 @@ char String[screenW] = " move:";
 int moveCount = 0;
 
 bot sheeps[500];
-int sheepsN = 2;
+int sheepsN = 8;   //Pre-generated sheeps
 int sheepsStart = 2;
 
 
@@ -325,7 +325,7 @@ int MapLoad(){
 				}
 			}
 
-	FILE *buff = fopen("../map1.txt", "r");
+	FILE *buff = fopen("./map1.txt", "r");
 	int i = 0;
 	char c;
 	while((c = getc(buff)) != EOF){
